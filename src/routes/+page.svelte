@@ -2,7 +2,7 @@
 	import Combobox from '$lib/components/ui/combobox/combobox.svelte';
 	import * as Field from '$lib/components/ui/field/index.js';
 	import * as InputGroup from '$lib/components/ui/input-group/index.js';
-	import { currencyNameToCode } from '$lib/const/currency.map';
+	import { currencyCodeToSymbol, currencyNameToCode } from '$lib/const/currency.map';
 	import { UseClipboard } from '$lib/hooks/use-clipboard.svelte';
 	import { usernameState } from '$lib/state/username.state.svelte';
 	import AtSignIcon from '@lucide/svelte/icons/at-sign';
@@ -27,7 +27,7 @@
 </svelte:head>
 
 <div class="flex h-dvh w-screen items-center justify-center">
-	<Field.Set class="w-full max-w-xl">
+	<Field.Set class="mx-10 w-full max-w-xl">
 		<Field.Legend>PayMe Link Generator</Field.Legend>
 		<Field.Group>
 			<Field.Field>
@@ -46,7 +46,7 @@
 				<div class="flex flex-row items-center gap-1">
 					<InputGroup.Root>
 						<InputGroup.Input id="value" bind:value type="number" />
-						<InputGroup.Addon>€</InputGroup.Addon>
+						<InputGroup.Addon>{currencyCodeToSymbol.get(currency)}</InputGroup.Addon>
 					</InputGroup.Root>
 					<Combobox
 						items={currencyItems}
