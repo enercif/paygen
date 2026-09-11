@@ -8,8 +8,9 @@
 	import AtSignIcon from '@lucide/svelte/icons/at-sign';
 	import IconCheck from '@lucide/svelte/icons/check';
 	import IconCopy from '@lucide/svelte/icons/copy';
+	import { Confetti } from 'svelte-confetti';
 
-	const clipboard = new UseClipboard();
+	const clipboard = new UseClipboard({ delay: 2000 });
 
 	const currencyItems = Array.from(currencyNameToCode.entries()).map(([label, value]) => ({
 		value,
@@ -20,6 +21,10 @@
 	let currency: string = $state('EUR');
 	let link: string = $derived(`https://paypal.me/${usernameState.current}/${value}${currency}`);
 </script>
+
+<svelte:head>
+	<title>PayMe Link Generator</title>
+</svelte:head>
 
 <div class="flex h-dvh w-screen items-center justify-center">
 	<Field.Set class="w-full max-w-xl">
@@ -63,10 +68,14 @@
 							aria-label="Copy"
 							title="Copy"
 							size="icon-xs"
+							class="relative"
 							onclick={() => clipboard.copy(link)}
 						>
 							{#if clipboard.copied}
 								<IconCheck />
+								<span class="pointer-events-none absolute inset-0 flex items-center justify-center">
+									<Confetti cone size={8} amount={40} x={[-0.4, 0.4]} y={[0.25, 0.75]} />
+								</span>
 							{:else}
 								<IconCopy />
 							{/if}
