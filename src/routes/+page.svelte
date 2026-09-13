@@ -2,12 +2,14 @@
 	import Combobox from '$lib/components/ui/combobox/combobox.svelte';
 	import * as Field from '$lib/components/ui/field/index.js';
 	import * as InputGroup from '$lib/components/ui/input-group/index.js';
+	import { Switch } from '$lib/components/ui/switch/index.js';
 	import { currencyCodeToSymbol, currencyNameToCode } from '$lib/const/currency.map';
 	import { UseClipboard } from '$lib/hooks/use-clipboard.svelte';
 	import { usernameState } from '$lib/state/username.state.svelte';
 	import AtSignIcon from '@lucide/svelte/icons/at-sign';
 	import IconCheck from '@lucide/svelte/icons/check';
 	import IconCopy from '@lucide/svelte/icons/copy';
+	import QR from '@svelte-put/qr/svg/QR.svelte';
 	import { Confetti } from 'svelte-confetti';
 
 	const clipboard = new UseClipboard({ delay: 2000 });
@@ -17,9 +19,15 @@
 		label
 	}));
 
+	let valueEnabled: boolean = $state(true);
 	let value: number = $state(0);
 	let currency: string = $state('EUR');
-	let link: string = $derived(`https://paypal.me/${usernameState.current}/${value}${currency}`);
+	let link: string = $derived.by(() => {
+		const username = usernameState.current.toLowerCase();
+		const withValue = valueEnabled && value > 0;
+		const suffix = withValue ? `/${value}${currency}` : '';
+		return `https://paypal.me/${username}${suffix}`;
+	});
 </script>
 
 <svelte:head>
@@ -44,8 +52,9 @@
 				<Field.Label for="value">Wert</Field.Label>
 
 				<div class="flex flex-row items-center gap-1">
+					<Switch bind:checked={valueEnabled} />
 					<InputGroup.Root>
-						<InputGroup.Input id="value" bind:value type="number" />
+						<InputGroup.Input id="value" bind:value type="number" disabled={!valueEnabled} />
 						<InputGroup.Addon>{currencyCodeToSymbol.get(currency)}</InputGroup.Addon>
 					</InputGroup.Root>
 					<Combobox
@@ -84,5 +93,6 @@
 				</InputGroup.Root>
 			</Field.Field>
 		</Field.Group>
+		<QR data={link} shape="circle" class="mx-auto mt-5 w-3/4" />
 	</Field.Set>
 </div>
