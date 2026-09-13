@@ -3,6 +3,7 @@
 	import * as Field from '$lib/components/ui/field/index.js';
 	import * as InputGroup from '$lib/components/ui/input-group/index.js';
 	import { Switch } from '$lib/components/ui/switch/index.js';
+	import ThemeToggle from '$lib/components/ui/theme-toggle/theme-toggle.svelte';
 	import { currencyCodeToSymbol, currencyNameToCode } from '$lib/const/currency.map';
 	import { UseClipboard } from '$lib/hooks/use-clipboard.svelte';
 	import { usernameState } from '$lib/state/username.state.svelte';
@@ -34,9 +35,14 @@
 	<title>PayMe Link Generator</title>
 </svelte:head>
 
+<div class="absolute top-10 right-10"></div>
+
 <div class="flex h-dvh w-screen items-center justify-center">
 	<Field.Set class="mx-10 w-full max-w-xl">
-		<Field.Legend>PayMe Link Generator</Field.Legend>
+		<Field.Legend class="flex w-full flex-row items-center justify-between">
+			<span>PayMe Link Generator</span>
+			<ThemeToggle />
+		</Field.Legend>
 		<Field.Group>
 			<Field.Field>
 				<Field.Label for="username">Nutzername</Field.Label>
