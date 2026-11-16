@@ -1,10 +1,9 @@
 <script lang="ts">
-	import Combobox from '$lib/components/ui/combobox/combobox.svelte';
 	import * as Field from '$lib/components/ui/field/index.js';
 	import * as InputGroup from '$lib/components/ui/input-group/index.js';
+	import Input from '$lib/components/ui/input/input.svelte';
 	import { Switch } from '$lib/components/ui/switch/index.js';
 	import ThemeToggle from '$lib/components/ui/theme-toggle/theme-toggle.svelte';
-	import { currencyCodeToSymbol, currencyNameToCode } from '$lib/const/currency.map';
 	import { UseClipboard } from '$lib/hooks/use-clipboard.svelte';
 	import { usernameState } from '$lib/state/username.state.svelte';
 	import AtSignIcon from '@lucide/svelte/icons/at-sign';
@@ -15,18 +14,12 @@
 
 	const clipboard = new UseClipboard({ delay: 2000 });
 
-	const currencyItems = Array.from(currencyNameToCode.entries()).map(([label, value]) => ({
-		value,
-		label
-	}));
-
 	let valueEnabled: boolean = $state(true);
 	let value: number = $state(0);
-	let currency: string = $state('EUR');
 	let link: string = $derived.by(() => {
 		const username = usernameState.current.toLowerCase();
 		const withValue = valueEnabled && value > 0;
-		const suffix = withValue ? `/${value}${currency}` : '';
+		const suffix = withValue ? `/${value}` : '';
 		return `https://paypal.me/${username}${suffix}`;
 	});
 </script>
@@ -57,19 +50,9 @@
 			<Field.Field>
 				<Field.Label for="value">Wert</Field.Label>
 
-				<div class="flex flex-row items-center gap-1">
+				<div class="flex flex-row items-center gap-4">
 					<Switch bind:checked={valueEnabled} />
-					<InputGroup.Root>
-						<InputGroup.Input id="value" bind:value type="number" disabled={!valueEnabled} />
-						<InputGroup.Addon>{currencyCodeToSymbol.get(currency)}</InputGroup.Addon>
-					</InputGroup.Root>
-					<Combobox
-						items={currencyItems}
-						bind:value={currency}
-						placeholder="Währung wählen..."
-						searchPlaceholder="Währung suchen..."
-						emptyText="Keine Währung gefunden."
-					/>
+					<Input id="value" bind:value type="number" disabled={!valueEnabled} />
 				</div>
 			</Field.Field>
 
